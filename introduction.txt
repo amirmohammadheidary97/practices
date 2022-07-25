@@ -1,0 +1,64 @@
+------------ whats is javascript :
+JavaScript was initially created to “make web pages alive”.
+
+The programs in this language are called scripts. They can be written right in a web page’s HTML and run automatically as the page loads.
+
+Scripts are provided and executed as plain text. They don’t need special preparation or compilation to run.
+
+جی اس در ابتدا برای "زنده کردن صفحات وب " ساخته شد
+برنامه ای که با این زبان ساخته میشود اسکریپت نامیده میشود .
+کد های جی اتس را میتوان مستقیما درون صفحات "اچ تی ام ال" نوشت  و سپس خودش به محض اینکه محتوای صفحه
+لود شد اجرا میشود
+
+------------------- javascript engine :
+Today, JavaScript can execute not only in the browser, but also on the server,
+ or actually on any device that has a special program called the JavaScript engine.
+
+ امروزه جاوا اسکریپت نه تنها در مرورگر ها بلکه حتی ئر سرور و درواقع هرجایی که برنامه مخصوصی به اسم 
+ موتور جاوا اسکریپت وجود داشته باشد کار میکند .
+
+ A JavaScript engine is a computer program that executes JavaScript 
+ code and converts it into computer understandable language.
+
+ یک موتور جاوا اسکریپت یک نرم افزار است که که کد جی اس را تبدیل به کد قابل فهم برای کامپیوتر میکند
+
+
+ ------------- existing javascript engines :
+ موتور های مختلفی وجود دارند که بعضی از آنها عبارتند از :
+ V8 – in Chrome, Opera and Edge.
+SpiderMonkey – in Firefox.
+…There are other codenames like “Chakra” for IE, “JavaScriptCore”, “Nitro” and “SquirrelFish” for Safari, etc.
+
+The browser has an embedded engine sometimes called a “JavaScript virtual machine”.
+مرورگر یک موتور جاسازی شده دارد که گاها به آن موتور مجاز جاوا اسکریپت گفته میشود
+
+*** مرور گر موتور جاوا اسکریپت نیست بلکه موتور مجاز جی اس در آن جاسازی شده است
+
+
+-------- how javascript engine works summary :
+
+طرز کار موتور ها به صورت خلاصه :
+
+1- The engine (embedded if it’s a browser) reads (“parses”) the script.
+2- Then it converts (“compiles”) the script to the machine language.
+3- And then the machine code runs, pretty fast.
+
+1- موتور مربوطه کد را میخواند 
+2- سپس آن را تبدیل به زبان ماشین میکند
+3 - سپس کامپیوتر کد را اجرا میکند
+
+* The engine applies optimizations at each step of the process. 
+It even watches the compiled script as it runs, analyzes the data that flows through it,
+and further optimizes the machine code based on that knowledge.
+
+----------------------
+
+
+
+
+
+javascript does not provide low-level access to memory or CPU, because it was initially created for browsers
+which do not require it.
+
+جاوا اسکریپت دسترسی های عمیق به چیز هایی مثل  مموری و پردازنده را فراهم نمیکند زیرا از ابتدا برای مرورگر ها ساخته شده
+و مرورگر ها نیز ، نیاز به چنین دسترسی هایی ندارند .
