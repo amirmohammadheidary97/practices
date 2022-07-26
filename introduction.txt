@@ -60,5 +60,18 @@ and further optimizes the machine code based on that knowledge.
 javascript does not provide low-level access to memory or CPU, because it was initially created for browsers
 which do not require it.
 
-جاوا اسکریپت دسترسی های عمیق به چیز هایی مثل  مموری و پردازنده را فراهم نمیکند زیرا از ابتدا برای مرورگر ها ساخته شده
+جاوا اسکریپت دسترسی های عمیق به چیز هایی مثل  مموری 
+و پردازنده را فراهم نمیکند زیرا از ابتدا برای مرورگر ها ساخته شده
 و مرورگر ها نیز ، نیاز به چنین دسترسی هایی ندارند .
+
+قابلیت های جاوا اسکریپت تا حد زیادی به محیطی که در آن اجرا میشود دارد
+مثلا نود جی اس امکاناتی مثل خواندن و نوشتن فایل ها را به جاوااسکریپت میدهد
+یا مرورگر دسترسی دستکاری در صفحات وب ، تعامل با کاربر 
+
+کار هایی جاوااسکریپت در مرورگر میتواند انجام دهد : 
+Add new HTML to the page, change the existing content, modify styles.
+React to user actions, run on mouse clicks, pointer movements, key presses.
+Send requests over the network to remote servers, download and upload files (so-called AJAX and COMET technologies).
+Get and set cookies, ask questions to the visitor, show messages.
+Remember the data on the client-side (“local storage”).
+
