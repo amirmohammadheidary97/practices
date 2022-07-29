@@ -75,3 +75,39 @@ Send requests over the network to remote servers, download and upload files (so-
 Get and set cookies, ask questions to the visitor, show messages.
 Remember the data on the client-side (“local storage”).
 
+/////////////////////
+
+javascript is a high-level , multi-paradigm, object-based , programming languge
+
+high-level programming language : 
+
+    "High-level language" refers to the higher level of abstraction from machine language.
+    زبان سطح بالا به میزان انتزاع از زبان ماشین اشاره میکند 
+    هرچه سطح زبان بالاتر باشد میزانی انتزاع نسبت به زبان ماشین بیشتر میشود .
+    Rather than dealing with registers, memory addresses, and call stacks, high-level languages
+    deal with variables, arrays, objects, complex arithmetic or boolean expressions,
+    subroutines and functions, loops, threads, locks, and other abstract computer science concepts,
+    with a focus on usability over optimal program efficiency. Unlike low-level assembly languages
+
+        1 : we dont need to be worry about complex stuff like memory management 
+        2 : SO => strong abstraction of  machine language.
+        3 : SO => making the process of developing a program simpler and more understandable than when using a lower-level language.
+        4 : AND => The amount of abstraction provided defines how "high-level" a programming language is.
+
+object-based : 
+
+    Object Based Languages:
+        Object based languages supports the usage of object and encapsulation.
+        They does not support inheritance or, polymorphism or, both.
+        Object based languages does not supports built-in objects.
+        Javascript, VB are the examples of object bases languages.
+    
+    Object Oriented Languages:
+        Object Oriented Languages supports all the features of OOPS including inheritance and polymorphism.
+        They support built-in objects.
+        C#, Java, VB. Net are the examples of object oriented languages.
+
+multi-paradigm:
+    we can use both ways to programming in JavaScript :
+        1 - declarative programming
+        2 - declarative programming
