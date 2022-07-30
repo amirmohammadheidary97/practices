@@ -107,7 +107,8 @@ object-based :
         They support built-in objects.
         C#, Java, VB. Net are the examples of object oriented languages.
 
-multi-paradigm:
-    we can use both ways to programming in JavaScript :
-        1 - declarative programming
-        2 - declarative programming
+    multi-paradigm:
+        we can use both ways to programming in JavaScript :
+            1 - declarative(توصیفی از کاری که میخوایم برنامه در نهایت برامون انجام بده بدون توجه خاصی به اینکه چجوری میخواد انجامش بده و چه پروسه ای رو برای رسیدن به هدف قراره طی بشه) programming
+            2 - imperative(امری دستوری و قدم به قدم) programming
+
