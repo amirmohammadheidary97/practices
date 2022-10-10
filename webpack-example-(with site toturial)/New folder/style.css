@@ -1,0 +1,12 @@
+@font-face {
+    font-family: vazir;
+    src: url("./Vazir-FD.woff");
+}
+
+*{
+    font-family: vazir;
+}
+
+.hello {
+  color: red;
+}
