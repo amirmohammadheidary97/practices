@@ -1,0 +1,18 @@
+Module: Discrete chunks of functionality that provide a smaller surface area than a full program. Well-written modules provide solid abstractions and encapsulation boundaries which make up a coherent design and clear purpose.
+
+
+ماژول یک بخش مستقلی از کارکرد برنامه است که اگر به خوبی نوشته شود  میتواند انتزاع و انکپسولیشن خوبی را به وجود بیاورد . برنامه های امروز از کارکرد ماژول ها با یکدیگر ساخته میشوند . 
+
+Chunk: This webpack-specific term is used internally to manage the bundling process. Bundles are composed out of chunks, of which there are several types (e.g. entry and child). Typically, chunks directly correspond with the output bundles however, there are some configurations that don't yield a one-to-one relationship.
+
+چانک یک واژه مخصوص وب‌ پک است که برای مدیریت پروسه باندلینگ استفاده میشود 
+
+Bundle: Produced from a number of distinct modules, bundles contain the final versions of source files that have already undergone the loading and compilation process.
+
+باندل از تعدادی ماژول مجزا تشکیل میشود .
+
+********
+Interpretation
+I summarize the difference as: a chunk is a group of modules within the webpack process, a bundle is an emitted chunk or set of chunks.
+چانک گروهی از ماژول ها است که طی پروسه وب پک تولید میشود و باندل 
+The distinction is useful when talking about webpack processes as they are occuring. As modules are chunked together, they can change significantly (especially during plugin processing), so it isn't accurate to call them bundles at that point, the chunks may not even be emitted as bundles in the final output! Then after webpack is finished it is useful to have a term to refer to all of the emitted, final files (bundles).
