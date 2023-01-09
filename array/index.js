@@ -1,4 +1,7 @@
 const introduction = `
+array is an collection with ordered and with length data items
+آرایه مجموعه ای از داده های مرتب و دارای طول مشخص است .
+
 in javascript the array is special structure of data
 we can stored data in objects and access them by key
 but some times we need to store ordered data where we have a 1st, a 2nd, a 3rd element and so on .

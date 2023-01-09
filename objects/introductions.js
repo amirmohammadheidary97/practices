@@ -1,5 +1,7 @@
 
 const introduction = `
+object is a collection of keyed data items
+آبجکت یک مجموعه ای از داده های کلید دار است .
 in JavaScript, objects penetrate almost every aspect of the language.
 در جاوا اسکریپت اشیا به همه ابعاد زبان نفوذ میکنند .
 an object is a type of data that can store data with key-value structure
