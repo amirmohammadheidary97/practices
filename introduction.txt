@@ -95,7 +95,6 @@ high-level programming language :
         4 : AND => The amount of abstraction provided defines how "high-level" a programming language is.
 
 object-based : 
-
     Object Based Languages:
         Object based languages supports the usage of object and encapsulation.
         They does not support inheritance or, polymorphism or, both.
