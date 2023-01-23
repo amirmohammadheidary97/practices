@@ -18,4 +18,55 @@ MACROTASK QUEUE :
 همه این بدبختی ها بخاطر سینگل ترد بون هست .
 
 
+EXAMPLE :
+===================================
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+
+  // do a piece of the heavy job (*)
+  do {
+    i++;
+  } while (i % 1e6 != 0);
+
+  if (i == 1e9) {
+    alert("Done in " + (Date.now() - start) + 'ms');
+  } else {
+    setTimeout(count); // schedule the new call (**)
+  }
+
+}
+
+count();
+
+===================================
+
+BEHIND THE SCENCE :
+
+macrotask queue = [
+  1: 1000_000 - 2000_000, macrotask
+  2: 2000_000 - 3000_000,
+  .
+  .
+  .
+  1000: 999_000_000 - 1_000_000_000
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 `;
