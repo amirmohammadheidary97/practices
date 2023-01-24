@@ -20,6 +20,7 @@ MACROTASK QUEUE :
 
 EXAMPLE :
 ===================================
+
 let i = 0;
 
 let start = Date.now();
@@ -41,13 +42,14 @@ function count() {
 
 count();
 
-===================================
+====================================
 
 BEHIND THE SCENCE :
 
 macrotask queue = [
-  1: 1000_000 - 2000_000, macrotask
-  2: 2000_000 - 3000_000,
+  1:  1000_000 - 2000_000,
+  1:  onClick()
+  2:  2000_000 - 3000_000,
   .
   .
   .
@@ -55,16 +57,67 @@ macrotask queue = [
 ]
 
 
+======================================
+EXAMPLE2 :
+
+let i = 0;
+
+let start = Date.now();
+
+function count() {
+
+  // move the scheduling to the beginning
+  // اول میفرسته توی صف ماکروتسک
+  if (i < 1e9 - 1e6) {
+    setTimeout(count); // schedule the new call
+  }
+
+  // کار های زیر تموم شد میره سراغ 
+  do {
+    i++;
+  } while (i % 1e6 != 0);
+
+  if (i == 1e9) {
+    alert("Done in " + (Date.now() - start) + 'ms');
+  }
+}
+
+count();
 
 
 
+BEHIND THE SCENCE :
 
 
+macrotaskQueue=[
+  count(),
 
+]
+=================================
+EXAMPLE3:
 
+<div id="progress"></div>
 
+<script>
+  let i = 0;
 
+  function count() {
 
+    // do a piece of the heavy job (*)
+    do {
+      i++;
+      progress.innerHTML = i;
+    } while (i % 1e3 != 0);
+
+    if (i < 1e7) {
+      setTimeout(count);
+    }
+
+  }
+
+  count();
+</script>
+======================================
 
 
 
