@@ -26,4 +26,14 @@ map.entries() => return an Iterable of keys not array . the iteration over map.k
 const map = new Map();
 const person = { name: "amir" };
 map.set(person, { name: "babak" });
-console.log(map.get(person))
+map.set(1, 2);
+map.set(true, { age: 45 });
+console.log(map.get(person));
+console.log(map.get(true));
+
+// convert map to object
+const obj = Object.fromEntries(map.entries());
+console.log(obj);
+// convert object to map
+const map2 = new Map(Object.entries(obj));
+console.log(map2);
