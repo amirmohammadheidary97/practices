@@ -1,26 +1,25 @@
-const createStore = () => {
-  let globalStore = null;
-  const subscribers = [];
-  ////
-  const subscribe = (subscriber) => {
-    /*
-    store name
-    */
-    subscribers.push(subscriber);
-  };
-  const unsubscribe = (subscriber) => {
-    subscribers.push(subscriber);
-  };
-  ////
-  const onStoreChanged = () => {
-    // subscribers
-  };
-};
-class Store {
-  #globalStore = undefined;
-  constructor(initialValue = undefined) {
-    this.#globalStore = initialValue;
+function createStore(reducer, initialState = {}) {
+  ///
+  const store = {
+    state: initialState,
+    listeners: [],
+    middlewares: [],
+    getState: () => state,
+    subscribe: function (listener) {
+      if (!this.listeners.find(listener))
+        this.listeners.push(listener);
+    },
+    unsubscribe: function (listener) {
+      const index = this.listeners.findIndex(listener)
+      this.listeners.splice(index, 1);
+    },
+    dispatch: function (payload = { type, action }) {
+      this.state = reducer({ state: this.state, payload });
+      setTimeout(() => {
+        this.listeners.forEach(listener => listener(payload));
+      }, 0);
+    }
   }
-  ////
-  createNewStore;
-}
+  ///
+  return store;
+};
