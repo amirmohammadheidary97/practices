@@ -1,0 +1,60 @@
++---------------------------------------------------------------------------------------------------+
+|                                         UI Layer (React Components)                              |
+|---------------------------------------------------------------------------------------------------|
+| - Responsible for rendering the user interface.                                                  |
+| - Handles user interactions (e.g., button clicks, form submissions).                             |
+| - Consumes custom hooks or services from the Business Logic Layer for data and actions.          |
+| - Example: A `UserProfile` component that displays user details and allows editing.              |
++---------------------------------------------------------------------------------------------------+
+                                          ▲
+                                          | (Uses)
+                                          |
++---------------------------------------------------------------------------------------------------+
+|                                Business Logic Layer (Custom Hooks/Services)                      |
+|---------------------------------------------------------------------------------------------------|
+| - Encapsulates application-specific logic.                                                       |
+| - Provides reusable hooks (e.g., `useUser`, `usePosts`) for components.                         |
+| - Handles side effects (e.g., fetching data, updating state).                                    |
+| - Example: A `useUser` hook that fetches user data and provides methods like `updateUser`.       |
++---------------------------------------------------------------------------------------------------+
+                                          ▲
+                                          | (Uses)
+                                          |
++---------------------------------------------------------------------------------------------------+
+|                                      Domain Layer (Entities & DTOs)                              |
+|---------------------------------------------------------------------------------------------------|
+| - Defines core business models (e.g., `User`, `Post`).                                           |
+| - Maps DTOs (Data Transfer Objects) from the API Layer to domain entities.                       |
+| - Encapsulates domain-specific logic (e.g., `User.isAdmin()`, `Post.canEdit()`).                 |
+| - Example: A `User` entity with methods like `getFullName()` and `isAdmin()`.                    |
++---------------------------------------------------------------------------------------------------+
+                                          ▲
+                                          | (Uses)
+                                          |
++---------------------------------------------------------------------------------------------------+
+|                                       API Layer (Fetch Functions)                                |
+|---------------------------------------------------------------------------------------------------|
+| - Encapsulates all API communication.                                                            |
+| - Provides fetch functions for specific endpoints (e.g., `getUser`, `createPost`).              |
+| - Transforms raw API data into DTOs for the Domain Layer.                                        |
+| - Example: A `getUser` function that fetches user data and transforms it into a `UserDTO`.       |
++---------------------------------------------------------------------------------------------------+
+                                          ▲
+                                          | (Uses)
+                                          |
++---------------------------------------------------------------------------------------------------+
+|                              Infrastructure Layer (Shared Services)                              |
+|---------------------------------------------------------------------------------------------------|
+| - Provides shared services (e.g., API client, logging, analytics).                              |
+| - Uses dependency injection to decouple services for better testability.                        |
+| - Example: An `ApiClient` service that handles HTTP requests and is injected into other layers.  |
++---------------------------------------------------------------------------------------------------+
+                                          ▲
+                                          | (Uses)
+                                          |
++---------------------------------------------------------------------------------------------------+
+|                                External APIs/Services (Backend/Third-party)                      |
+|---------------------------------------------------------------------------------------------------|
+| - The source of data and functionality (e.g., REST APIs, GraphQL, third-party services).         |
+| - Example: A backend API that provides user data or a third-party service for payment processing.|
++---------------------------------------------------------------------------------------------------+
