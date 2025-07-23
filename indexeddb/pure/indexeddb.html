@@ -1,0 +1,64 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    let openRequest = indexedDB.open("gallery-db", 1);
+    let deleteRequest = indexedDB.deleteDatabase(name);
+
+    openRequest.onupgradeneeded = function () {
+      console.log("tr");
+
+      // triggers if the client had no database
+      // ...perform initialization...
+      if (!db.objectStoreNames.contains("images")) {
+        // if there's no "books" store
+        db.createObjectStore("images", { keyPath: "id" });
+      }
+    };
+
+    openRequest.onerror = function () {
+      console.error("Error", openRequest.error);
+    };
+
+    openRequest.onsuccess = function () {
+      let db = openRequest.result;
+
+      db.onversionchange = function () {
+        db.close();
+        alert("Database is outdated, please reload the page.");
+      };
+    };
+
+    openRequest.onblocked = function () {
+      // this event shouldn't trigger if we handle onversionchange correctly
+      // it means that there's another open connection to the same database
+      // and it wasn't closed after db.onversionchange triggered for it
+    };
+  </script>
+</html>
+<!-- 
+type img = string | File | Blob;
+
+interface IPost {
+  id: string;//uuid
+  image: img | img[];
+}
+interface IAlbum {
+  id: string;//uuid
+  title: string;
+  posts: IPost[];
+}
+interface IUser{
+  id: string; //uuid
+  username: string; //max char : 50
+  albums:IAlbum[]
+}
+
+
+
+
+-->
