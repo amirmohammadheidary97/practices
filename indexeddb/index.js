@@ -38,19 +38,101 @@ const schemaVersioning = `
 
 IndexedDB has a built-in mechanism of “schema versioning”, absent in server-side databases.
 
-Unlike server-side databases, IndexedDB is client-side, the data is stored in the browser, so we, developers, don’t have full-time access to it. So, when we have published a new version of our app, and the user visits our webpage, we may need to update the database.
+Unlike server-side databases, IndexedDB is client-side, the data is stored in the browser,
+so we, developers, don’t have full-time access to it.
+ So, when we have published a new version of our app,
+  and the user visits our webpage, we may need to update the database.
 
 `;
 
 const duplicateTabsProblem = `
-
-The db.onversionchange listener informs us about a parallel update attempt, if the current database version becomes outdated.
-
-The openRequest.onblocked listener informs us about the opposite situation: there’s a connection to an outdated version elsewhere, and it doesn’t close, so the newer connection can’t be made.
-
-
+The db.onversionchange listener informs us about a parallel update attempt,
+if the current database version becomes outdated.
+The openRequest.onblocked listener informs us about the opposite situation: there’s a
+connection to an outdated version elsewhere,
+and it doesn’t close, so the newer connection can’t be made.
 `;
 
 const objectStore = `
-  same as tables and collection in serverside databases
+  same as tables and collection in serverside databases .
+
+  keys :  A key must be one of these types – number, date, string, binary, or array.  
+
+
+  creating an store :
+
+    *** An object store can only be created/modified while updating the DB version, in upgradeneeded handler.
+
+    db.createObjectStore(name[, keyOptions]);
+    *** Please note, the operation is synchronous, no await needed.
+    
+    keyOptions?:
+    {
+      keyPath : a path to a unique property of object . like "id"
+    } 
+      or
+    {
+      autoIncrement : boolean; 
+    }
+
+    -------------
+
+    To delete an object store:
+      db.deleteObjectStore('books')
+`;
+
+const transactions = `
+  db.transaction(store[, type]);
+  
+  store is a store name that the transaction is going to access, e.g. "books".
+  Can be an array of store names if we’re going to access multiple stores.
+
+    type = "readonly" | "readwrite"
+
+  ***  autocommit : a transaction does not wait for macrotasks finish and then do some operations.
+  When all transaction requests are finished, and the microtasks queue is empty, it is committed automatically.
+  
+  // an example showing that transaction getting closed when a macrotask comes after it :
+  
+  let transaction = db.transaction("books", "readwrite");
+  let bookstore = transaction.objectStore("books");
+
+  let request1 = bookstore.add(book);
+  request1.onsuccess = function() {
+    fetch('/').then(response => {
+      let request2 = bookstore.add(anotherBook); // we will recieve error here beacase fetch is a macrotask
+      request2.onerror = function() {
+        console.log(request2.error.name); // TransactionInactiveError
+      };
+    });
+  };
+
+  // true way
+  let transaction = db.transaction("books", "readwrite");
+  let bookstore = transaction.objectStore("books");
+
+  let request1 = bookstore.add(book);
+  request1.onsuccess = function() {
+    fetch('/').then(response => {
+      let transaction2 = db.transaction("books", "readwrite");
+      let bookstore2 = transaction.objectStore("books");
+      let request2 = bookstore2.add(anotherBook); // we will recieve error here beacase fetch is a macrotask
+      request2.onerror = function() {
+        console.log(request2.error.name); // TransactionInactiveError
+      };
+    });
+  };
+
+  -------------------
+
+  // successfull transaction :
+  transaction.oncomplete = function() {
+    console.log("Transaction is complete");
+  };
+
+
+  -------------------
+
+  // manual abort
+  transaction.abort();
 `;

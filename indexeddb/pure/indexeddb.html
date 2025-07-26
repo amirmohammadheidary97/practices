@@ -4,19 +4,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <body></body>
+  <body>
+    <main>
+      <form onsubmit="onsubmitted(event)">
+        <input required type="text" name="id" id="id" />
+        <input required type="text" name="image" id="image" />
+        <input required type="text" name="name" id="name" />
+        <button>Add</button>
+      </form>
+    </main>
+  </body>
   <script>
-    let openRequest = indexedDB.open("gallery-db", 1);
-    let deleteRequest = indexedDB.deleteDatabase(name);
+    const openRequest = indexedDB.open("gallery-db");
+    let readwrite_images_Transaction = undefined;
 
-    openRequest.onupgradeneeded = function () {
-      console.log("tr");
+    openRequest.onupgradeneeded = function (event) {
+      let db = openRequest.result;
+      switch (
+        event.oldVersion // existing db version
+      ) {
+        case 0:
+          console.log(0);
+          db.createObjectStore("images", { keyPath: "id" });
 
-      // triggers if the client had no database
-      // ...perform initialization...
-      if (!db.objectStoreNames.contains("images")) {
-        // if there's no "books" store
-        db.createObjectStore("images", { keyPath: "id" });
+          break;
+        // version 0 means that the client had no database
+        // perform initialization
+        case 1:
+          console.log(1);
+          if (!db.objectStoreNames.contains("images")) {
+            db.createObjectStore("images", { keyPath: "id" });
+          }
+          break;
+        case 2:
+          console.log(2);
+          break;
       }
     };
 
@@ -37,6 +59,39 @@
       // this event shouldn't trigger if we handle onversionchange correctly
       // it means that there's another open connection to the same database
       // and it wasn't closed after db.onversionchange triggered for it
+    };
+
+    const addImage = ({ id, name, image }) => {
+      readwrite_images_Transaction = openRequest.result.transaction(
+        "images",
+        "readwrite"
+      );
+      console.log(readwrite_images_Transaction);
+      if (readwrite_images_Transaction) {
+        const images = readwrite_images_Transaction.objectStore("images");
+        let request = images.add({
+          id,
+          name,
+          image,
+        });
+        request.onsuccess = function () {
+          console.log("image added to the store", request.result);
+        };
+        request.onerror = function () {
+          console.log("Error", request.error);
+        };
+      }
+    };
+
+    const onsubmitted = (e) => {
+      e.preventDefault();
+      const r = {
+        id: e.srcElement[0].value,
+        image: e.srcElement[1].value,
+        name: e.srcElement[2].value,
+      };
+      console.log(r);
+      addImage(r);
     };
   </script>
 </html>
