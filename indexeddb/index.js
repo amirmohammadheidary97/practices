@@ -135,4 +135,78 @@ const transactions = `
 
   // manual abort
   transaction.abort();
+
+
+  //// Error Handling ////
+  ✅ IndexedDB – Error Handling خلاصه‌ی خلاصه:
+  خطای write ممکنه پیش بیاد (مثلاً پر شدن quota) → تراکنش abort می‌شه.
+  با event.preventDefault() توی request.onerror → می‌تونی جلوی abort شدن تراکنش رو بگیری.
+  اگه خطا رو هندل کردی، با event.stopPropagation() جلو رفتنش به db.onerror رو بگیر.
+  رویدادها bubble می‌شن → می‌تونی خطاها رو توی db.onerror به‌صورت کلی لاگ کنی.
+  اگه هندل نکنی → تراکنش fail → از transaction.onabort برای گرفتن خطا استفاده کن.
 `;
+
+const searching = `
+
+*** search methods :
+  get , getAll , getAllKeys
+
+*** searching by key :
+
+//#region
+  ** search by exact key :
+    books.get('js');
+
+  ** search by range of keys: IDBKeyRange
+
+    IDBKeyRange.lowerBound(lower, [open]) means: ≥lower (or >lower if open is true).
+    IDBKeyRange.upperBound(upper, [open]) means: ≤upper (or <upper if open is true).
+    IDBKeyRange.bound(lower, upper, [lowerOpen], [upperOpen]) means: between lower and upper. If the open flags is true, the corresponding key is not included in the range.
+    IDBKeyRange.only(key) – a range that consists of only one key, rarely used.
+
+    examples :
+      books.getAll(IDBKeyRange.bound('css', 'html'))
+
+      // get books with id < 'html'
+      books.getAll(IDBKeyRange.upperBound('html', true))
+
+      // get all books
+      books.getAll()
+
+      // get all keys, where id > 'js'
+      books.getAllKeys(IDBKeyRange.lowerBound('js', true))
+//#endregion
+
+*** searching by index :
+  //#region
+
+  docs :
+    objectStore.createIndex(name, keyPath, [options]);
+
+    name – index name,
+    keyPath – path to the object field .
+    option ?: {
+      unique ?: boolean ; //if true, then there may be only one object in the store with the given value at the keyPath. The index will enforce that by generating an error if we try to add a duplicate.
+      multiEntry – only used if the value on keyPath is an array. In that case, by default, the index will treat the whole array as the key. But if multiEntry is true, then the index will keep a list of store objects for each value in that array. So array members become index keys.  
+    }
+
+  this way is used to search by other fields of stored objects .
+
+  for example we want to search by price :
+
+    const books = db.createObjectStore("books" , {keyPath : "id"});
+    const priceIndex = books.createIndex("price_idx" , ["price","prev-price"], {multiEntry:true});
+
+    const request = priceIndex.getAll(IDBKeyRange.bound(1,10))
+    request.onsuccess = function(){
+      if (request.result !== undefined) {
+        console.log("Books", request.result); // array of books with price=10
+      } else {
+        console.log("No such books");
+      }
+    }
+
+  //#endregion
+`;
+
+const deleting = ``;

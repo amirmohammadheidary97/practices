@@ -3,42 +3,157 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      /* common */
+      .field {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+
+        input {
+          padding: 0.5rem 1rem;
+        }
+      }
+      button {
+        width: 150px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        line-height: 1rem;
+      }
+      /* form */
+      body {
+        background-color: #f4f4f4;
+      }
+      .form-container {
+        display: flex;
+        flex-direction: column;
+        background-color: #fafafa;
+        padding: 1rem;
+      }
+      form {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        padding: 1rem;
+        box-shadow: 0 0 5px 0 #ebebeb;
+        border: 1px solid #aaa;
+        border-radius: 0.5rem;
+      }
+      /* table */
+      #table-container {
+        display: flex;
+        flex-direction: column;
+        background-color: #fafafa;
+        padding: 1rem;
+      }
+      table {
+        border: 1px solid #555;
+        width: 100%;
+        border-radius: 0.5rem;
+      }
+
+      td {
+        padding: 0.5rem;
+        border: 1px solid red;
+      }
+    </style>
   </head>
   <body>
     <main>
-      <form onsubmit="onsubmitted(event)">
-        <input required type="text" name="id" id="id" />
-        <input required type="text" name="image" id="image" />
-        <input required type="text" name="name" id="name" />
-        <button>Add</button>
-      </form>
+      <!-- form -->
+      <div class="form-container">
+        <h2>Chickens form</h2>
+        <form onsubmit="onAddChickenSubmitted(event)">
+          <!-- ID -->
+          <div class="field">
+            <label for="id">ID</label>
+            <input required type="text" name="id" id="id" />
+          </div>
+          <!-- name -->
+          <div class="field">
+            <label for="name">Name</label>
+            <input required type="text" name="name" id="name" />
+          </div>
+          <!-- current-price -->
+          <div class="field">
+            <label for="current-price">Current Price</label>
+            <input
+              required
+              type="number"
+              name="current-price"
+              id="current-price"
+            />
+          </div>
+          <!-- Last Price -->
+          <div class="field">
+            <label for="last-price">Last Price</label>
+            <input required type="number" name="last-price" id="last-price" />
+          </div>
+
+          <button>Add</button>
+        </form>
+      </div>
+      <!-- table -->
+      <div id="table-container">
+        <h2>Chickens Table</h2>
+        <div class="filter-container">
+          <form onsubmit="handleSubmitFilter(event)">
+            <!-- Last Price -->
+            <div class="field">
+              <label for="min-price">Min Price</label>
+              <input type="number" name="min-price" id="min-price" />
+            </div>
+            <!-- Last Price -->
+            <div class="field">
+              <label for="max-price">Max Price</label>
+              <input type="number" name="max-price" id="max-price" />
+            </div>
+            <!-- btn -->
+            <button>Search</button>
+          </form>
+        </div>
+        <!-- table -->
+        <table id="chickens-table">
+          <thead>
+            <tr>
+              <td>id</td>
+              <td>name</td>
+              <td>current price</td>
+              <td>last price</td>
+            </tr>
+          </thead>
+          <tbody id="chickens-table-body"></tbody>
+        </table>
+      </div>
+      <!-- queries -->
+      <!-- <div>
+        <button type="button" onclick="getAllChicks()">get All</button>
+      </div> -->
+      <!--  -->
     </main>
   </body>
   <script>
-    const openRequest = indexedDB.open("gallery-db");
-    let readwrite_images_Transaction = undefined;
+    const openRequest = indexedDB.open("chickens-db", 3);
+    let readwrite_chickens_Transaction = undefined;
 
     openRequest.onupgradeneeded = function (event) {
       let db = openRequest.result;
-      switch (
-        event.oldVersion // existing db version
-      ) {
-        case 0:
-          console.log(0);
-          db.createObjectStore("images", { keyPath: "id" });
 
-          break;
-        // version 0 means that the client had no database
-        // perform initialization
-        case 1:
-          console.log(1);
-          if (!db.objectStoreNames.contains("images")) {
-            db.createObjectStore("images", { keyPath: "id" });
-          }
-          break;
-        case 2:
-          console.log(2);
-          break;
+      let chiksStore = undefined;
+      if (!db.objectStoreNames.contains("chickens")) {
+        chiksStore = db.createObjectStore("chickens", { keyPath: "id" });
+        chiksStore.transaction.createIndex(
+          "current_price_idx",
+          "current-price"
+        );
+      } else {
+        const store = event.currentTarget.transaction.objectStore("chickens");
+        if (!store.indexNames.contains("current_price_idx")) {
+          store.createIndex("current_price_idx", "current-price");
+        }
       }
     };
 
@@ -53,6 +168,16 @@
         db.close();
         alert("Database is outdated, please reload the page.");
       };
+
+      const trans = db.transaction("chickens");
+      if (
+        !trans.objectStore("chickens").indexNames.contains("current_price_idx")
+      )
+        trans
+          .objectStore("chickens")
+          .createIndex("current_price_idx", "current-price");
+
+      init();
     };
 
     openRequest.onblocked = function () {
@@ -61,21 +186,16 @@
       // and it wasn't closed after db.onversionchange triggered for it
     };
 
-    const addImage = ({ id, name, image }) => {
-      readwrite_images_Transaction = openRequest.result.transaction(
-        "images",
-        "readwrite"
-      );
-      console.log(readwrite_images_Transaction);
-      if (readwrite_images_Transaction) {
-        const images = readwrite_images_Transaction.objectStore("images");
-        let request = images.add({
-          id,
-          name,
-          image,
-        });
+    const addChicken = (chicken) => {
+      const db = openRequest.result;
+      const trans = db.transaction("chickens", "readwrite");
+      console.log(trans);
+
+      if (trans) {
+        const chickens = readwrite_chickens_Transaction.objectStore("chickens");
+        let request = chickens.add(chicken);
         request.onsuccess = function () {
-          console.log("image added to the store", request.result);
+          console.log("chicken added to the store", request.result);
         };
         request.onerror = function () {
           console.log("Error", request.error);
@@ -83,37 +203,129 @@
       }
     };
 
-    const onsubmitted = (e) => {
+    const printChiks = (chiks) => {
+      readwrite_chickens_Transaction = openRequest.result.transaction(
+        "chickens",
+        "readwrite"
+      );
+    };
+
+    const addToTable = (chik) => {
+      if (Array.isArray(chik)) {
+        const trblist = chik.map((ch) => {
+          const tr = `
+            <td> ${ch.id} </td>
+            <td> ${ch?.name ?? "-"} </td>
+            <td> ${ch["current-price"]} </td>
+            <td> ${ch["last-price"]} </td>
+         `;
+          const trb = document.createElement("tr");
+          trb.innerHTML = tr;
+
+          return trb;
+        });
+        const tbody = document.getElementById("chickens-table-body");
+        tbody.append(...trblist);
+      } else {
+        const tr = `
+          <td> ${chik.id} </td>
+          <td> ${chik.name} </td>
+          <td> ${chik["current-price"]} </td>
+          <td> ${chik["last-price"]} </td>
+      `;
+
+        const trb = document.createElement("tr");
+        trb.innerHTML = tr;
+
+        const tbody = document.getElementById("chickens-table-body");
+        tbody.appendChild(trb);
+      }
+    };
+
+    const getAllChicks = () =>
+      new Promise((res, rej) => {
+        const db = openRequest.result;
+        const trans = db.transaction("chickens");
+        const chiksStore = trans.objectStore("chickens");
+
+        const getAllChiksReq = chiksStore.getAll();
+        getAllChiksReq.onsuccess = (e) => {
+          const chiks = e.target.result;
+          res(chiks);
+        };
+      });
+
+    const getChicksByPrice = ({ minPrice, maxPrice }) => {
+      return new Promise((res, rej) => {
+        const db = openRequest.result;
+        const trans = db.transaction("chickens");
+        const chiksStore1 = trans.objectStore("chickens");
+        const priceIndex = chiksStore1.index("current_price_idx");
+
+        let range = undefined;
+        if (minPrice !== undefined && maxPrice === undefined) {
+          range = IDBKeyRange.upperBound(minPrice);
+        } else if (minPrice === undefined && maxPrice !== undefined) {
+          range = IDBKeyRange.lowerBound(maxPrice);
+        } else if (minPrice !== undefined && maxPrice !== undefined) {
+          range = IDBKeyRange.bound(minPrice, maxPrice);
+        } else {
+          return rej("at least one of min or max most be defined .");
+        }
+
+        const req = priceIndex.getAll(range);
+        req.onsuccess = (e) => {
+          console.log(e);
+
+          res(e.target.result);
+        };
+        req.onerror = (e) => {
+          rej("funck");
+        };
+      });
+    };
+
+    const onAddChickenSubmitted = (e) => {
       e.preventDefault();
-      const r = {
+      const newRecord = {
         id: e.srcElement[0].value,
-        image: e.srcElement[1].value,
-        name: e.srcElement[2].value,
+        name: e.srcElement[1].value,
+        "current-price": Number(e.srcElement[2].value),
+        "last-price": Number(e.srcElement[3].value),
       };
-      console.log(r);
-      addImage(r);
+      addChicken(newRecord);
+      addToTable(newRecord);
+    };
+
+    // init
+    const init = async () => {
+      const chiks = await getAllChicks();
+      addToTable(chiks);
+    };
+  </script>
+  <script>
+    const handleSubmitFilter = (e) => {
+      e.preventDefault();
+
+      const inputElemnts = e.target.elements;
+      const inputValues = {};
+
+      if (inputElemnts["max-price"].value.trim() !== "")
+        inputValues["max-price"] = Number(inputElemnts["max-price"].value);
+
+      if (inputElemnts["min-price"].value.trim() !== "")
+        inputValues["min-price"] = Number(inputElemnts["min-price"].value);
+
+      if (Object.keys(inputValues).length !== 0) {
+        console.log(inputValues);
+
+        getChicksByPrice({
+          maxPrice: inputValues["max-price"],
+          minPrice: inputValues["min-price"],
+        }).then((res) => {
+          console.log(res);
+        });
+      }
     };
   </script>
 </html>
-<!-- 
-type img = string | File | Blob;
-
-interface IPost {
-  id: string;//uuid
-  image: img | img[];
-}
-interface IAlbum {
-  id: string;//uuid
-  title: string;
-  posts: IPost[];
-}
-interface IUser{
-  id: string; //uuid
-  username: string; //max char : 50
-  albums:IAlbum[]
-}
-
-
-
-
--->
