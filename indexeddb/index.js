@@ -209,4 +209,43 @@ const searching = `
   //#endregion
 `;
 
-const deleting = ``;
+const deleting = `
+let transaction = db.transaction("books", "readwrite");
+let books = transaction.objectStore("books");
+
+books.delete('js');
+books.clear(); // clear the storage.
+`;
+
+const cursors = `
+
+  methods like getAll/getAllKeys may return huge data that could be bigger than memory.
+  
+  A cursor is a special object that traverses the object storage, given a query, and returns one key/value at a time, thus saving memory.
+
+  let request = store.openCursor(query, [direction]);
+  
+  direction : "next" | "prev" is an optional argument, which order to use:
+  "next" – the default, the cursor walks up from the record with the lowest key.
+  "prev" – the reverse order: down from the record with the biggest key.
+  "nextunique", "prevunique" – same as above, but skip records with the same key (only for cursors over indexes, e.g. for multiple books with price=5 only the first one will be returned).
+  The main difference of the cursor is that request.onsuccess triggers multiple times: once for each result.
+
+
+  when to use ?
+
+  1. You need to filter or process each item conditionally
+    You don’t want to load everything into memory.
+    You want to stop early or skip certain records.
+
+  2. You’re working with a very large dataset
+    openCursor() streams one record at a time.
+    More memory-efficient and scalable.
+
+  3. You want to update or delete records during iteration
+    openCursor() gives you access to the record's key and allows
+    cursor.update() or cursor.delete().
+
+  4. You want more complex range queries or ordering
+    openCursor() gives you finer control over range and direction.
+`;

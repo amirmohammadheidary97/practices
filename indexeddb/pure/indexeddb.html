@@ -77,20 +77,20 @@
             <label for="name">Name</label>
             <input required type="text" name="name" id="name" />
           </div>
-          <!-- current-price -->
+          <!-- currentPrice -->
           <div class="field">
-            <label for="current-price">Current Price</label>
+            <label for="currentPrice">Current Price</label>
             <input
               required
               type="number"
-              name="current-price"
-              id="current-price"
+              name="currentPrice"
+              id="currentPrice"
             />
           </div>
           <!-- Last Price -->
           <div class="field">
-            <label for="last-price">Last Price</label>
-            <input required type="number" name="last-price" id="last-price" />
+            <label for="lastPrice">Last Price</label>
+            <input required type="number" name="lastPrice" id="lastPrice" />
           </div>
 
           <button>Add</button>
@@ -129,30 +129,30 @@
         </table>
       </div>
       <!-- queries -->
-      <!-- <div>
-        <button type="button" onclick="getAllChicks()">get All</button>
-      </div> -->
+      <div>
+        <button onclick="handleDeleteCheap()">Delete cheap chickens</button>
+      </div>
       <!--  -->
     </main>
   </body>
   <script>
-    const openRequest = indexedDB.open("chickens-db", 3);
-    let readwrite_chickens_Transaction = undefined;
+    const openRequest = indexedDB.open("chickens-db", 1);
 
     openRequest.onupgradeneeded = function (event) {
       let db = openRequest.result;
 
-      let chiksStore = undefined;
       if (!db.objectStoreNames.contains("chickens")) {
-        chiksStore = db.createObjectStore("chickens", { keyPath: "id" });
-        chiksStore.transaction.createIndex(
-          "current_price_idx",
-          "current-price"
-        );
+        const chiksStore = db.createObjectStore("chickens", { keyPath: "id" });
+        const trans = chiksStore.transaction;
+
+        trans
+          .objectStore("chickens")
+          .createIndex("current_price_idx", "currentPrice");
       } else {
-        const store = event.currentTarget.transaction.objectStore("chickens");
+        const transaction = event.target.transaction;
+        const store = transaction.objectStore("chickens");
         if (!store.indexNames.contains("current_price_idx")) {
-          store.createIndex("current_price_idx", "current-price");
+          store.createIndex("current_price_idx", "currentPrice");
         }
       }
     };
@@ -169,14 +169,6 @@
         alert("Database is outdated, please reload the page.");
       };
 
-      const trans = db.transaction("chickens");
-      if (
-        !trans.objectStore("chickens").indexNames.contains("current_price_idx")
-      )
-        trans
-          .objectStore("chickens")
-          .createIndex("current_price_idx", "current-price");
-
       init();
     };
 
@@ -189,10 +181,9 @@
     const addChicken = (chicken) => {
       const db = openRequest.result;
       const trans = db.transaction("chickens", "readwrite");
-      console.log(trans);
 
       if (trans) {
-        const chickens = readwrite_chickens_Transaction.objectStore("chickens");
+        const chickens = trans.objectStore("chickens");
         let request = chickens.add(chicken);
         request.onsuccess = function () {
           console.log("chicken added to the store", request.result);
@@ -203,11 +194,41 @@
       }
     };
 
-    const printChiks = (chiks) => {
-      readwrite_chickens_Transaction = openRequest.result.transaction(
-        "chickens",
-        "readwrite"
-      );
+    const deleteCheapChickens = (priceLimit = 100) => {
+      return new Promise((res, rej) => {
+        const db = openRequest.result;
+        const tx = db.transaction("chickens", "readwrite");
+        const store = tx.objectStore("chickens");
+        const index = store.index("current_price_idx");
+
+        const range = IDBKeyRange.upperBound(priceLimit);
+
+        const cursorReq = index.openCursor(range);
+        let deletedCount = 0;
+
+        cursorReq.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            cursor.delete();
+            deletedCount++;
+            cursor.continue();
+          } else {
+            res(deletedCount);
+          }
+        };
+
+        cursorReq.onerror = () => rej(cursorReq.error);
+      });
+    };
+
+    const handleDeleteCheap = async () => {
+      const deleted = await deleteCheapChickens(12);
+      alert(`Deleted ${deleted} chickens with price <= 12`);
+
+      const refreshed = await getAllChicks();
+      const tbody = document.getElementById("chickens-table-body");
+      tbody.innerHTML = ""; // خالی کردن جدول
+      addToTable(refreshed);
     };
 
     const addToTable = (chik) => {
@@ -216,8 +237,8 @@
           const tr = `
             <td> ${ch.id} </td>
             <td> ${ch?.name ?? "-"} </td>
-            <td> ${ch["current-price"]} </td>
-            <td> ${ch["last-price"]} </td>
+            <td> ${ch["currentPrice"]} </td>
+            <td> ${ch["lastPrice"]} </td>
          `;
           const trb = document.createElement("tr");
           trb.innerHTML = tr;
@@ -230,8 +251,8 @@
         const tr = `
           <td> ${chik.id} </td>
           <td> ${chik.name} </td>
-          <td> ${chik["current-price"]} </td>
-          <td> ${chik["last-price"]} </td>
+          <td> ${chik["currentPrice"]} </td>
+          <td> ${chik["lastPrice"]} </td>
       `;
 
         const trb = document.createElement("tr");
@@ -290,8 +311,8 @@
       const newRecord = {
         id: e.srcElement[0].value,
         name: e.srcElement[1].value,
-        "current-price": Number(e.srcElement[2].value),
-        "last-price": Number(e.srcElement[3].value),
+        currentPrice: Number(e.srcElement[2].value),
+        lastPrice: Number(e.srcElement[3].value),
       };
       addChicken(newRecord);
       addToTable(newRecord);
