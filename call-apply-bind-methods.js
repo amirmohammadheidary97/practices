@@ -15,8 +15,12 @@ var person = {
     return this.name + " is " + message;
   },
 };
+const getAge1 = function () {
+  return this.age;
+};
 var person2 = { age: 54, name: "mamad" };
 // console.log(person.getAge.call(person2));
+// console.log(getAge1.call(person2));
 // console.log(person.saySomething.call(person2, "developer"));
 
 // فانکشن رو به عنوان متدی از آبجکت در نظر میگیره و بهش دسترسی میده که از
