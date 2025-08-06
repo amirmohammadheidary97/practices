@@ -21,4 +21,29 @@
     <textarea dir="rtl" autofocus></textarea>
   </body>
   <script src="./microtasks.js"></script>
+  <script>
+    const first = () => {
+      const name = "amir";
+
+      const second = () => {
+        const lastName = "heidary";
+
+        if (lastName.includes("h")) {
+          console.log("has h");
+        }
+
+        const fourth = () => {
+          const age = 28;
+
+          console.log(
+            `my full name is ${name} ${lastName} and my age is ${age} .`
+          );
+        };
+      };
+    };
+
+    const third = () => {
+      console.log("im third");
+    };
+  </script>
 </html>
