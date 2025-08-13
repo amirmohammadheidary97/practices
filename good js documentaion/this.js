@@ -1,3 +1,6 @@
+const explain = `
+ the value  of this is completely depended to where it si called .
+`;
 function functionDeclaration() {
   return this;
 }
