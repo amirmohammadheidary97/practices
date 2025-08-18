@@ -28,18 +28,24 @@ const obj1 = {
   },
 };
 
-Object.defineProperty({}, "age", {
+const obj3 = {};
+Object.defineProperty(obj3, "age", {
   configurable: false,
   enumerable: false,
-  // value:22,
   get() {
-    return this.age;
+    return this._age;
   },
   set(v) {
-    this.age += v;
+    if (this._age === undefined) {
+      this._age = 0;
+    }
+    this._age += v;
   },
 });
 
+obj3.age = 5;
+obj3.age = 3;
+console.log(obj3.age); // 8
 obj1.fullname = "amiriiii ddxc";
 obj1.age = 45;
 obj1.age = 22;
