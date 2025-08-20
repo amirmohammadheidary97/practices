@@ -28,7 +28,7 @@ console.log(h4.constructor == h3.constructor); // true
 console.log(h1.age); // undefiend
 console.log(h2.age); // undefiend
 console.log(h3.age); // 32
-console.log(h3.fname); // 'amir'
-console.log(h3.getFname()); // 'amir'
-console.log(h4.fname); // 'ali'
+console.log(h3.fname); // amir
+console.log(h3.getFname()); // amir
+console.log(h4.fname); // ali
 console.log(h5); // Human
